@@ -17,11 +17,15 @@ namespace PointOfSale.Models
         [RegularExpression(@"^\d\d\d\d\d\d\d\d\d\d\d$",ErrorMessage ="PhoneNo must contain 11 digits")]
         public string PhoneNo { get; set; }
         [RegularExpression(@"^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$", ErrorMessage = "Email is not valid.")]
+        [Required]
         public string UserMail { get; set; }
+        [Required]
         public bool IsAdmin { get; set; }
         public bool IsActive { get; set; }
         [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy}")]
         public DateTime UserCreated { get; set; }
+        [Required]
+        public int Createdby { get; set; }
     }
     public class UserLog
     {

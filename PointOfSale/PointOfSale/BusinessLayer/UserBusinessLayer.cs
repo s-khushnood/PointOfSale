@@ -63,5 +63,18 @@ namespace PointOfSale.BusinessLayer
                 throw new Exception($"Error encountered of type {ex.GetType()} due to {ex.Message} in user update");
             }
         }
+        public int UserAdminToggle(int userid,int updateid)
+        {
+            try
+            {
+                int response=2;
+                response = dl.UserAdminToggle(userid, updateid);
+                return response;
+            }
+            catch(Exception ex)
+            {
+                throw new Exception($"Error encountered of type {ex.GetType()} due to {ex.Message} in user admin toggle");
+            }
+        }
     }
 }

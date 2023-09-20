@@ -55,6 +55,10 @@ namespace PointOfSale.Controllers
                     {
                         return BadRequest(new { StatusCode = StatusCodes.Status400BadRequest, Message = "User Not added" });
                     }
+                    else if(response == "Not An Admin")
+                    {
+                        return BadRequest(new { StatusCode = StatusCodes.Status400BadRequest, Message = "Only Admins can add new user" });
+                    }
                     return Ok(new { StatusCode = StatusCodes.Status200OK, Message = "User Added successfully" });
                 }
                 return BadRequest(new { StatusCode = StatusCodes.Status400BadRequest, Message = "Invalid Inputs" });
@@ -71,12 +75,12 @@ namespace PointOfSale.Controllers
         {
             try
             {
-                if (userupdate.Password != null)
-                {
-                    userupdate.Password = GetHash256(userupdate.Password);
-                }
                 if (ModelState.IsValid)
                 {
+                    if (userupdate.Password != null)
+                    {
+                        userupdate.Password = GetHash256(userupdate.Password);
+                    }
                     string response = bl.UserUpdate(userupdate);
                     if (response == null)
                     {
@@ -92,6 +96,37 @@ namespace PointOfSale.Controllers
             }
         }
 
+        [HttpPut]
+        [Route(@"toggleadmin")]
+        public async Task<IActionResult> UserAdminToggle(int userid,int updateid)
+        {
+            try
+            {
+                int response = new();
+                    if (userid>0 && updateid>0)
+                    {
+                        response = bl.UserAdminToggle(userid,updateid);
+                        if(response == 0)
+                        {
+                             return Ok(new { StatusCode = StatusCodes.Status200OK, Message = "User account has been updated to NON-ADMIN account" });
+                        }
+                        else if (response == 1)
+                        {
+                        return Ok(new { StatusCode = StatusCodes.Status200OK, Message = "User account has been updated to ADMIN account" });
+                        }
+                        else if (response == -1)
+                        {
+                        return BadRequest(new { StatusCode = StatusCodes.Status403Forbidden, Message = "Only Admins can change users status" });
+                        }
+                    }  
+                    return BadRequest(new { StatusCode = StatusCodes.Status400BadRequest, Message = "Invalid UserId or AdminId" });
+                
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { StatusCode = StatusCodes.Status500InternalServerError, Message = $"Exception occurred: {ex.Message}" });
+            }
+        }
         static string GetHash256(string s)
         {
             string Hash = string.Empty;

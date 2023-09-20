@@ -54,8 +54,16 @@ namespace PointOfSale.DataLayer
                     cmd.Parameters.AddWithValue("@email", user.UserMail);
                     cmd.Parameters.AddWithValue("@pword", user.Password);
                     cmd.Parameters.AddWithValue("@isadmin", Convert.ToBoolean(user.IsAdmin));
+                    cmd.Parameters.AddWithValue("createdby", Convert.ToInt32(user.Createdby));
+                    cmd.Parameters.Add("@return", SqlDbType.Int, 32);
+                    cmd.Parameters["@return"].Direction = ParameterDirection.Output;
                     conn.Open();
                     response=cmd.ExecuteNonQuery().ToString();
+                    int res= (int)cmd.Parameters["@return"].Value;
+                    if (res == -1)
+                    {
+                        return response="Not An Admin";
+                    }
                     conn.Close();
                 };
                 return response;
@@ -89,6 +97,30 @@ namespace PointOfSale.DataLayer
             catch (Exception ex)
             {
                 throw new Exception($"An exception of type {ex.GetType()} encountered while user update due to {ex.Message}");
+            }
+        }
+        public int UserAdminToggle(int userid, int updateid)
+        {
+            try
+            {
+                int res = 2;
+                using (SqlCommand cmd = new SqlCommand("useradmintoggle", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@userid",userid);
+                    cmd.Parameters.AddWithValue("@updateby", updateid);
+                    cmd.Parameters.Add("@return", SqlDbType.Int, 32);
+                    cmd.Parameters["@return"].Direction = ParameterDirection.Output;
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                    res = (int)cmd.Parameters["@return"].Value;
+                    conn.Close();
+                };
+                return res;
+            }
+            catch(Exception ex)
+            {
+                throw new Exception($"An exception of type {ex.GetType()} encountered while changing user's admin status due to {ex.Message}");
             }
         }
     }
