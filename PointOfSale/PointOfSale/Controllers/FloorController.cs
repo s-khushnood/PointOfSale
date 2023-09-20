@@ -28,6 +28,10 @@ namespace PointOfSale.Controllers
                     {
                         return Ok(new { StatusCode = StatusCodes.Status200OK, Message = "Floor has been assigned to user" });
                     }
+                    else if (response == 0)
+                    {
+                        return BadRequest(new { StatusCode = StatusCodes.Status403Forbidden, Message = "Floor already assigned to this user" });
+                    }
                     else if (response == -1)
                     {
                         return BadRequest(new { StatusCode = StatusCodes.Status403Forbidden, Message = "Only admins can assign floors to users" });
