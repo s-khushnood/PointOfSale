@@ -24,6 +24,7 @@ namespace PointOfSale.BusinessLayer
                         Floor floor = new Floor();
                         floor.FloorId = Convert.ToInt32(dr["floorId"]);
                         floor.FloorTitle = dr["floorTitle"].ToString();
+                        floor.isActive = Convert.ToBoolean(dr["isActive"]);
                         floors.Add(floor);
                     }
                 }

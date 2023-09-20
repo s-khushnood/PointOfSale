@@ -22,7 +22,7 @@ namespace PointOfSale.Controllers
             {
                 List<Floor> floors =new List<Floor>();
                 floors=bl.Getfloorbyuser(userid);
-                if (floors != null)
+                if (floors.Count!=0)
                 {
                     return Ok(new { StatusCode = StatusCodes.Status200OK, Message = "Successfully fectched floors assigned to user", floors });
                 }
