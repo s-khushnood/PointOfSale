@@ -1,0 +1,45 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using PointOfSale.BusinessLayer;
+using PointOfSale.Models;
+using System.Security.Cryptography;
+using System.Text;
+
+namespace PointOfSale.Controllers
+{
+    [ApiController]
+    public class FloorController : ControllerBase
+    {
+        private readonly FloorBusinessLayer bl;
+        public FloorController(IConfiguration configuration)
+        {
+            bl = new FloorBusinessLayer(configuration);
+        }
+        [HttpPost]
+        [Route(@"assignfloor")]
+        public async Task<IActionResult> UserFloorAssign(int userid, int floorid,int assignedby)
+        {
+            try
+            {
+                int response = new();
+                if (userid > 0 && assignedby > 0 && floorid>0)
+                {
+                    response = bl.AssignFloor(userid, floorid, assignedby);
+                    if (response == 1)
+                    {
+                        return Ok(new { StatusCode = StatusCodes.Status200OK, Message = "Floor has been assigned to user" });
+                    }
+                    else if (response == -1)
+                    {
+                        return BadRequest(new { StatusCode = StatusCodes.Status403Forbidden, Message = "Only admins can assign floors to users" });
+                    }
+                }
+                return BadRequest(new { StatusCode = StatusCodes.Status400BadRequest, Message = "Invalid UserId, FloorId or AdminId" });
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { StatusCode = StatusCodes.Status500InternalServerError, Message = $"Exception occurred: {ex.Message}" });
+            }
+        }
+    }
+}

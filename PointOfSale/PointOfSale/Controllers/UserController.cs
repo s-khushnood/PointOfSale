@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 namespace PointOfSale.Controllers
 {
     [ApiController]
-    public class LoginController : ControllerBase
+    public class UserController : ControllerBase
     {
         private readonly UserBusinessLayer bl;
-        public LoginController(IConfiguration configuration)
+        public UserController(IConfiguration configuration)
         {
             bl = new UserBusinessLayer(configuration);
         }
