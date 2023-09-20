@@ -14,6 +14,28 @@ namespace PointOfSale.Controllers
         {
             bl = new FloorBusinessLayer(configuration);
         }
+        [HttpGet]
+        [Route(@"getfloorbyuser")]
+        public async Task<IActionResult> Getfloorbyuser(int userid)
+        {
+            try
+            {
+                List<Floor> floors =new List<Floor>();
+                floors=bl.Getfloorbyuser(userid);
+                if (floors != null)
+                {
+                    return Ok(new { StatusCode = StatusCodes.Status200OK, Message = "Successfully fectched floors assigned to user", floors });
+                }
+                return BadRequest(new {StatusCode=StatusCodes.Status400BadRequest,Message="No floor assigned to this user"});
+                    
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { StatusCode = StatusCodes.Status500InternalServerError, Message = $"Exception occurred: {ex.Message}" });
+            }
+        }
+
+
         [HttpPost]
         [Route(@"assignfloor")]
         public async Task<IActionResult> UserFloorAssign(int userid, int floorid,int assignedby)

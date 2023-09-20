@@ -13,6 +13,34 @@ namespace PointOfSale.DataLayer
             _configuration = configuration;
             conn = new SqlConnection(_configuration.GetConnectionString("sql-conn"));
         }
+        public DataTable Getfloorbyuser(int userid)
+        {
+            try
+            {
+                DataTable dt = new DataTable();
+                using (SqlCommand cmd = new SqlCommand("getfloorbyuser", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@userid", userid);
+                    conn.Open();
+                    using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
+                    {
+
+                        adapter.Fill(dt);
+                    }
+                    conn.Close();
+                };
+                return dt;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error of type {ex.GetType()} encountered while getting user's floor data due to {ex.Message}");
+            }
+        }
+        
+        
+        
+        
         public int AssignFloor(int userid,int floorid, int assignedby)
         {
             try
